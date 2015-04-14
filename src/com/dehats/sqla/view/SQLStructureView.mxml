@@ -13,10 +13,12 @@
 			import com.dehats.sqla.model.MainModel;
 			import com.dehats.sqla.model.presentation.MainPM;
 			import com.dehats.sqla.model.presentation.SQLStructureViewPM;
+			import flash.data.SQLColumnSchema;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.dataGridClasses.DataGridColumn;
 			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
 			
 			[Bindable]
 			public var pm:SQLStructureViewPM;
@@ -43,6 +45,13 @@
 				win.pm = pm;
 			}				
 			
+			private function getProxy(item:Object):ObjectProxy
+			{
+				var proxyItem:ObjectProxy;
+				proxyItem = new ObjectProxy(item);
+				return proxyItem;
+			}
+			
 		]]>
 	</mx:Script>
 	
@@ -52,7 +61,7 @@
 	
 	<mx:TextInput id="tableNameTi"
 				  enter="pm.renameTable( tableNameTi.text)"
-				  text="{ pm.selectedTable.name}" 
+				  text="{ getProxy(pm.selectedTable).name}" 
 				  width="118"  x="102" y="8" />
 	
 	<mx:Button x="228" y="8" label="Rename" 
@@ -76,7 +85,7 @@
 	<mx:DataGrid id="columnsDG"
 				 change=" pm.selectColumn( columnsDG.selectedItem as SQLColumnSchema )"
 				 selectedItem="{pm.selectedColumn}"
-				 dataProvider="{ pm.selectedTable.columns }" left="10" right="10" bottom="291" top="38">
+				 dataProvider="{ getProxy(pm.selectedTable).columns }" left="10" right="10" bottom="291" top="38">
 		<mx:columns>
 			<mx:DataGridColumn headerText="Field Name" dataField="name"/>
 			<mx:DataGridColumn headerText="Data Type" dataField="dataType" width="100"/>
@@ -97,7 +106,7 @@
 			<mx:FormItem label="Field Name" direction="horizontal">			
 				<mx:TextInput id="selectedColNameTi" 
 							  enter="pm.renameColumn( selectedColNameTi.text);"
-							  text="{ pm.selectedColumn.name}"/>
+							  text="{ getProxy(pm.selectedColumn).name}"/>
 				<mx:Button label="Rename"
 						   icon="{AssetManager.ICON_REFRESH}"
 						   click=" pm.renameColumn( selectedColNameTi.text);"/>				

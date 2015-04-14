@@ -33,7 +33,7 @@
 			import com.dehats.sqla.model.MainModel; 
 			
 			[Bindable]
-			private var mainPM:MainPM = new MainPM(nativeApplication);
+			public var mainPM:MainPM = new MainPM(nativeApplication);
 			
 			
 			private function onCreationComplete():void
@@ -114,7 +114,7 @@
 				var win:AboutWin = PopUpManager.createPopUp(this, AboutWin, true) as AboutWin;
 				PopUpManager.centerPopUp(win);
 				var ns:Namespace = new Namespace(nativeApplication.applicationDescriptor.namespaceDeclarations()[0]);
-				win.version = nativeApplication.applicationDescriptor.ns::version;
+				win.version = nativeApplication.applicationDescriptor.ns::versionNumber;
 				win.pm = mainPM;
 			}			
 			

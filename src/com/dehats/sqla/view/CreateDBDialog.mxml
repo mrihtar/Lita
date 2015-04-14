@@ -9,6 +9,7 @@
 			import mx.controls.Alert;
 			import com.dehats.sqla.model.presentation.MainPM;
 			import mx.managers.PopUpManager;
+			import flash.filesystem.File;
 
 			[Bindable]
 			public var pm:MainPM;

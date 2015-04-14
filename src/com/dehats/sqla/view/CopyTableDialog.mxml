@@ -11,7 +11,8 @@
 			import com.dehats.sqla.model.presentation.SQLStructureViewPM;
 			
 			
-			[Bindable] public var pm:SQLStructureViewPM;
+			[Bindable]
+			public var pm:SQLStructureViewPM;
 			
 			
 			public function copy():void

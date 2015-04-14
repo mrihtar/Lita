@@ -15,6 +15,7 @@
 			import com.dehats.flex.controls.DateTimeEditor;
 			import com.dehats.sqla.model.AssetManager;
 			import com.dehats.sqla.model.presentation.SQLDataViewPM;
+			import flash.data.SQLColumnSchema;
 			
 			import mx.binding.utils.BindingUtils;
 			import mx.containers.FormHeading;
@@ -26,6 +27,7 @@
 			
 			import spark.components.TextArea;
 			import spark.components.TextInput;
+			import mx.utils.ObjectProxy;
 			
 			[Bindable]
 			public var pm:SQLDataViewPM;
@@ -38,7 +40,12 @@
 			
 			private var defaultComp:UIComponent;
 			
-			
+			private function getProxy(item:Object):ObjectProxy
+			{
+				var proxyItem:ObjectProxy;
+				proxyItem = new ObjectProxy(item);
+				return proxyItem;
+			}
 			
 			private function onCreationComplete():void
 			{
@@ -108,7 +115,10 @@
 					
 					// add datadgrid columns
 					var dgc:DataGridColumn = new DataGridColumn(col.name);
-					dgc.width = ( (this.measuredWidth-20) / (totalCols-1) );
+					dgc.width = ( (this.width-20) / (totalCols-1) );
+					var width:Number = col.name.length * 6;
+					if(width < 50) width = 50;
+					if(dgc.width < 50) dgc.width = width;
 					coltab.push(dgc);
 					
 				}
@@ -320,7 +330,7 @@
 			
 		]]>
 	</fx:Script>
-	<mx:Label x="10" y="12" text="{ pm.tableRecords.length } record(s)"/>
+	<mx:Label x="10" y="12" text="{ getProxy(pm.tableRecords).length } record(s)"/>
 	
 	<mx:Button y="10" label="Export Data"
 			   click=" pm.exportRecords()" right="218" icon="{AssetManager.ICON_EXPORT_TABLE}"/>

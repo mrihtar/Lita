@@ -8,6 +8,7 @@ package com.dehats.sqla.model
 	import flash.filesystem.FileStream;
 	import flash.utils.ByteArray;
 	
+	[Bindable]
 	public class FileManager extends EventDispatcher
 	{
 		

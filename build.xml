@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Flex Ant Tasks Build Script" default="package">
+
+    <!-- Load the environment-specific properties -->
+    <property file="build.properties" />
+
+    <!-- Sets the FlexTasks.jar file that contains the build tasks -->
+    <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/> 
+
+    <!-- Start off by recreating the deployment directory -->
+    <target name="init" description="Clear deployment directory">
+        <delete verbose="true" failonerror="false">
+          <fileset dir="${DEPLOY_DIR}" includes="**" />
+        </delete>
+        <mkdir dir="${DEPLOY_DIR}" />
+    </target>
+
+    <!-- Build and output the main SWF file - repeat this for each SWF in the solution -->
+    <target name="compile" description="Compile the application" depends="init">
+        <mxmlc file="${SRC_DIR}/${APP_NAME}.mxml"
+               output="${DEPLOY_DIR}/${APP_NAME}.swf"
+               debug="${DEBUG}"
+               optimize="${OPTIMIZE}"
+               locale="${LOCALE}"
+               configname="air"
+               static-link-runtime-shared-libraries="${STATIC}">
+            <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+            <source-path path-element="${SRC_DIR}"/>
+            <library-path dir="${FLEX_HOME}/frameworks/libs" includes="*.swc" append="true"/>
+            <library-path dir="${FLEX_HOME}/frameworks/libs/air" includes="*.swc" append="true"/>
+            <library-path dir="${FLEX_HOME}/frameworks/locale" includes="${LOCALE}" append="true"/>
+        </mxmlc>
+    </target>
+
+    <!-- Now create the AIR package using the ADT utility -->
+    <target name="package" description="Create AIR package" depends="compile">
+        <exec executable="${FLEX_HOME}/bin/adt.bat" failonerror="true">
+            <arg line="-package" />
+            <arg line="-tsa none" />
+            <arg line="-storetype pkcs12" />
+            <arg line="-keystore '${KEYS_DIR}/signingCert.pfx'" />
+            <arg line="-storepass test" />
+            <arg line="'${DEPLOY_DIR}/${APP_NAME}.air'" />
+            <arg line="'${SRC_DIR}/${APP_NAME}-app.xml'" />
+            <arg line="-C '${DEPLOY_DIR}' ${APP_NAME}.swf" />
+        </exec>
+    </target>
+
+    <target name="test" description="Test the application">
+        <exec executable="${FLEX_HOME}/bin/adl.exe" failonerror="true">
+            <arg line="'${SRC_DIR}/${APP_NAME}-app.xml'" />
+            <arg line="'${DEPLOY_DIR}'" />
+        </exec>
+    </target>
+
+    <target name="key" description="Create signing certificate">
+        <mkdir dir="${KEYS_DIR}" />
+        <exec executable="${FLEX_HOME}/bin/adt.bat" failonerror="true">
+            <arg line="-certificate" />
+            <arg line="-cn 'ACME Corp'" />
+            <arg line="-o 'ACME Corp'" />
+            <arg line="-c US" />
+            <arg line="-validityPeriod 20" />
+            <arg line="2048-RSA" />
+            <arg line="'${KEYS_DIR}/signingCert.pfx'" />
+            <arg line="test" />
+        </exec>
+    </target>
+
+</project>

@@ -104,6 +104,11 @@ package com.dehats.sqla.model.presentation
 			return fileManager.recentlyOpened;
 		}
 		
+		public function set recentlyOpenedFiles(value:Array):void
+		{
+			fileManager.recentlyOpened = value;
+		}
+		
 		// Debug only
 		public function resetRecentlyOpened():void 
 		{ 

@@ -9,6 +9,7 @@
 			import com.dehats.sqla.model.presentation.TableListPM;
 			import com.dehats.sqla.model.presentation.MainPM;
 			import com.dehats.sqla.model.AssetManager;
+			import flash.data.SQLTableSchema;
 			
 			[Bindable]
 			public var pm:TableListPM;

@@ -15,7 +15,7 @@
 			import com.dehats.sqla.model.MainModel;
 //			import com.dehats.air.SQLiteDBHelper;
 
-
+			[Bindable]
 			public var mainPM:MainPM;
 			
 			private function closeMe():void

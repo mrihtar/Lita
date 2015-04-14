@@ -8,6 +8,7 @@
 			import com.dehats.sqla.model.presentation.MainPM;
 			import mx.managers.PopUpManager;
 			
+			[Bindable]			
 			public var pm:MainPM;
 			
 			private function closeMe():void

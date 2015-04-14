@@ -15,6 +15,8 @@
 			import mx.events.CloseEvent;
 			import mx.managers.PopUpManager;
 			import com.dehats.sqla.model.AssetManager;
+			import flash.filesystem.File;
+			import mx.utils.ObjectProxy;
 			
 			[Bindable]
 			public var closable:Boolean = true ;
@@ -29,9 +31,6 @@
 			
 			private function onCreationComplete():void
 			{
-				
-				trace(pm.recentlyOpenedFiles==null)
-				
 				if(pm.recentlyOpenedFiles.length>0)
 				{
 					var f:File = new File(pm.recentlyOpenedFiles[0].path);
@@ -70,13 +69,20 @@
 				pm.onOpenFileDialogClosed(null);
 				PopUpManager.removePopUp(this);
 			}
+
+			private function getProxy(item:Object):ObjectProxy
+			{
+				var proxyItem:ObjectProxy;
+				proxyItem = new ObjectProxy(item);
+				return proxyItem;
+			}
 			
 		]]>
 	</mx:Script>
 
 	<mx:ComboBox y="12" id="fileListCmb"
-		toolTip="{ (fileListCmb.selectedItem).path}"
-		change=" selectedFile = new File( fileListCmb.selectedItem.path)"
+		toolTip="{ getProxy(fileListCmb.selectedItem).path}"
+		change=" selectedFile = new File( getProxy(fileListCmb.selectedItem).path)"
 		labelField="name"
 		dataProvider="{ pm.recentlyOpenedFiles }"
 		left="85" right="153"></mx:ComboBox>
