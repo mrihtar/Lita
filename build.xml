@@ -8,22 +8,24 @@
     <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar"/> 
 
     <!-- Start off by recreating the deployment directory -->
-    <target name="init" description="Clear deployment directory">
-        <delete verbose="true" failonerror="false">
-          <fileset dir="${DEPLOY_DIR}" includes="**" />
+    <target name="clean" description="Clear deployment directory">
+        <delete includeemptydirs="true" verbose="true" quiet="true">
+          <fileset dir="${DEPLOY_DIR}" includes="**/*" />
         </delete>
         <mkdir dir="${DEPLOY_DIR}" />
     </target>
 
     <!-- Build and output the main SWF file - repeat this for each SWF in the solution -->
-    <target name="compile" description="Compile the application" depends="init">
+    <target name="compile" description="Compile the application" depends="clean">
         <mxmlc file="${SRC_DIR}/${APP_NAME}.mxml"
                output="${DEPLOY_DIR}/${APP_NAME}.swf"
                debug="${DEBUG}"
                optimize="${OPTIMIZE}"
                locale="${LOCALE}"
                configname="air"
-               static-link-runtime-shared-libraries="${STATIC}">
+               static-link-runtime-shared-libraries="${STATIC}"
+               maxmemory="1024m"
+               failonerror="true">
             <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
             <source-path path-element="${SRC_DIR}"/>
             <library-path dir="${FLEX_HOME}/frameworks/libs" includes="*.swc" append="true"/>
@@ -43,16 +45,33 @@
             <arg line="'${DEPLOY_DIR}/${APP_NAME}.air'" />
             <arg line="'${SRC_DIR}/${APP_NAME}-app.xml'" />
             <arg line="-C '${DEPLOY_DIR}' ${APP_NAME}.swf" />
+            <arg line="-C '${SRC_DIR}' assets/icons/icon_016.png" />
+            <arg line="-C '${SRC_DIR}' assets/icons/icon_032.png" />
+            <arg line="-C '${SRC_DIR}' assets/icons/icon_048.png" />
+            <arg line="-C '${SRC_DIR}' assets/icons/icon_128.png" />
+            <arg line="-C '${SRC_DIR}' assets/Encryption.zip" />
+            <arg line="-C '${SRC_DIR}' sample.db" />
+            <arg line="-C '${SRC_DIR}' updaterConfig.xml" />
         </exec>
     </target>
 
+    <!-- Test the SWF package using the ADL utility -->
     <target name="test" description="Test the application">
+        <copy file="${SRC_DIR}/assets/icons/icon_016.png" todir="${DEPLOY_DIR}/assets/icons" failonerror="false" />
+        <copy file="${SRC_DIR}/assets/icons/icon_032.png" todir="${DEPLOY_DIR}/assets/icons" failonerror="false" />
+        <copy file="${SRC_DIR}/assets/icons/icon_048.png" todir="${DEPLOY_DIR}/assets/icons" failonerror="false" />
+        <copy file="${SRC_DIR}/assets/icons/icon_128.png" todir="${DEPLOY_DIR}/assets/icons" failonerror="false" />
+        <copy file="${SRC_DIR}/assets/Encryption.zip" todir="${DEPLOY_DIR}/assets" failonerror="false" />
+        <copy file="${SRC_DIR}/sample.db" todir="${DEPLOY_DIR}" failonerror="false" />
+        <copy file="${SRC_DIR}/updaterConfig.xml" todir="${DEPLOY_DIR}" failonerror="false" />
+
         <exec executable="${FLEX_HOME}/bin/adl.exe" failonerror="true">
             <arg line="'${SRC_DIR}/${APP_NAME}-app.xml'" />
             <arg line="'${DEPLOY_DIR}'" />
         </exec>
     </target>
 
+    <!-- Create dummy signing certificate for the AIR package -->
     <target name="key" description="Create signing certificate">
         <mkdir dir="${KEYS_DIR}" />
         <exec executable="${FLEX_HOME}/bin/adt.bat" failonerror="true">
